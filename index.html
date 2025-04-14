@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseSplit - Group Expense Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-wallet"></i>
+                <span>ExpenseSplit</span>
+            </div>
+            <button class="theme-toggle" id="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <div class="dashboard">
+            <div class="groups-panel">
+                <div class="groups-header">
+                    <div class="groups-count">
+                        <span>My Groups</span>
+                        <span class="count-badge" id="groups-count">0</span>
+                    </div>
+                    <button class="btn" id="add-group-btn">
+                        <i class="fas fa-plus"></i>
+                        <span>Add Group</span>
+                    </button>
+                </div>
+                <div class="groups-list" id="groups-list">
+                    <!-- Groups will be dynamically added here -->
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="welcome-icon">
+                        <i class="fas fa-hand-holding-dollar"></i>
+                    </div>
+                    <h1 class="welcome-title">Welcome to ExpenseSplit</h1>
+                    <p class="welcome-subtitle">Create a group to get started tracking and splitting expenses with your friends, family, or colleagues.</p>
+                    <button class="btn" id="welcome-add-group-btn">
+                        <i class="fas fa-plus"></i>
+                        <span>Create Your First Group</span>
+                    </button>
+                </div>
+
+                <div class="group-details" id="group-details">
+                    <div class="group-details-header">
+                        <h2 class="group-details-title" id="group-name">Group Name</h2>
+                        <div class="group-actions">
+                            <button class="btn btn-secondary" id="generate-report-btn">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                                <span>Generate Report</span>
+                            </button>
+                            <button class="btn" id="add-expense-btn">
+                                <i class="fas fa-plus"></i>
+                                <span>Add Expense</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="group-info">
+                        <div class="info-block">
+                            <div class="info-block-title">Members</div>
+                            <div class="info-block-value" id="members-count">0</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-block-title">Total Expenses</div>
+                            <div class="info-block-value" id="total-expenses">$0.00</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-block-title">Last Updated</div>
+                            <div class="info-block-value" id="last-updated">-</div>
+                        </div>
+                    </div>
+
+                    <div class="expenses-container">
+                        <div class="expenses-header">
+                            <h3 class="expenses-title">Expenses</h3>
+                        </div>
+                        
+                        <div class="expense-list" id="expense-list">
+                            <!-- Expenses will be dynamically added here -->
+                            <div class="empty-state" id="empty-expenses">
+                                <div class="empty-icon">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <div class="empty-text">No expenses yet. Add your first expense!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="balances-container">
+                        <div class="balances-header">
+                            <h3 class="balances-title">Current Balances</h3>
+                        </div>
+                        
+                        <div class="balance-list" id="balance-list">
+                            <!-- Balances will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Group Modal -->
+    <div class="modal-overlay" id="add-group-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Group</h3>
+                <button class="modal-close" id="close-add-group-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-group-form">
+                    <div class="form-group">
+                        <label class="form-label" for="group-name-input">Group Name</label>
+                        <input type="text" class="form-control" id="group-name-input" placeholder="e.g. Weekend Trip, Roommates, etc." required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Group Members</label>
+                        <div class="member-input-container">
+                            <input type="text" class="form-control" id="member-input" placeholder="Add member name">
+                            <button type="button" class="btn" id="add-member-btn">Add</button>
+                        </div>
+                        <div class="form-members" id="members-list">
+                            <!-- Members will be dynamically added here -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-text" id="cancel-add-group">Cancel</button>
+                <button class="btn" id="save-group-btn">Create Group</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div class="modal-overlay" id="add-expense-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Expense</h3>
+                <button class="modal-close" id="close-add-expense-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-expense-form">
+                    <div class="form-group">
+                        <label class="form-label" for="expense-name-input">Expense Description</label>
+                        <input type="text" class="form-control" id="expense-name-input" placeholder="e.g. Dinner, Movie tickets, etc." required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="expense-amount-input">Amount</label>
+                        <input type="number" step="0.01" min="0.01" class="form-control" id="expense-amount-input" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="expense-payer-input">Paid by</label>
+                        <select class="form-control" id="expense-payer-input" required>
+                            <!-- Group members will be dynamically added here -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Split Method</label>
+                        <div class="split-options">
+                            <label class="split-option">
+                                <input type="radio" name="split-method" value="equal" checked> Split equally
+                            </label>
+                            <label class="split-option">
+                                <input type="radio" name="split-method" value="custom"> Custom amounts
+                            </label>
+                        </div>
+                        <div class="custom-split" id="custom-split-container" style="display: none;">
+                            <!-- Custom split inputs will be dynamically added here -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="expense-date-input">Date</label>
+                        <input type="date" class="form-control" id="expense-date-input" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-text" id="cancel-add-expense">Cancel</button>
+                <button class="btn" id="save-expense-btn">Add Expense</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generate Report Modal -->
+    <div class="modal-overlay" id="report-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Expense Report</h3>
+                <button class="modal-close" id="close-report-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="report-container">
+                    <h4 class="report-title">Settlements Summary</h4>
+                    <div class="report-settlements" id="report-settlements">
+                        <!-- Settlement items will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="close-report-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toast-container">
+        <!-- Toast notifications will be dynamically added here -->
+    </div>
+
+    <script src="script.js">
+    </script>
+</body>
+</html>
