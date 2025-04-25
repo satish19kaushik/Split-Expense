@@ -175,7 +175,7 @@ header {
 }
 
 .group-item {
-    padding: 15px;
+    padding: 11px;
     border-radius: 8px;
     background-color: var(--bg-color);
     cursor: pointer;
@@ -197,7 +197,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 3px;
 }
 
 .group-name {
@@ -219,7 +219,9 @@ header {
     display: flex;
     flex-direction: column;
 }
-
+.group-expense-count{
+    font-size: 0.8rem;
+}
 .welcome-screen, .group-details {
     background-color: var(--card-bg);
     border-radius: 10px;
@@ -658,8 +660,15 @@ header {
 .toast.info {
     background-color: var(--info-color);
 }
-
-/* Responsive adjustments */
+.confirm-dialog{
+    background: white;
+    padding: 1rem;
+    border-radius: 16px;
+}
+.confirm-actions{
+    margin-top: 1rem;
+}
+/* Responsive adjustments */    
 @media (max-width: 768px) {
     .dashboard {
         grid-template-columns: 1fr;
@@ -672,5 +681,186 @@ header {
 
     .balance-list {
         grid-template-columns: 1fr;
+    }
+}
+/* Enhanced Responsive CSS for ExpenseSplit */
+ 
+/* Base responsive adjustments */
+@media (max-width: 992px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        height: auto;
+    }
+    .groups-panel {
+        max-height: 250px;
+    }
+    .group-details-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .group-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    .group-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .info-block {
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .info-block:last-child {
+        border-bottom: none;
+    }
+    .balance-list {
+        grid-template-columns: 1fr;
+    }
+    .modal {
+        width: 95%;
+        max-height: 80vh;
+    }
+}
+ 
+/* Mobile-specific adjustments */
+@media (max-width: 576px) {
+    .container {
+        padding: 10px;
+    }
+    header {
+        padding: 15px 0;
+        margin-bottom: 15px;
+    }
+    .logo {
+        font-size: 20px;
+    }
+    .logo i {
+        font-size: 22px;
+    }
+    .group-details {
+        padding: 15px;
+    }
+    .group-details-title {
+        font-size: 20px;
+    }
+    .btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    .expense-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .expense-amount {
+        align-self: flex-end;
+    }
+    .welcome-title {
+        font-size: 22px;
+    }
+    .welcome-icon {
+        font-size: 60px;
+    }
+    .modal-header, .modal-body, .modal-footer {
+        padding: 15px;
+    }
+    .form-member {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+    .member-input-container {
+        flex-direction: column;
+    }
+    .member-input-container .btn {
+        align-self: flex-start;
+    }
+    .custom-split {
+        grid-template-columns: 1fr;
+    }
+    /* Improve modal spacing on small screens */
+    .form-group {
+        margin-bottom: 15px;
+    }
+    /* Adjust toast position */
+    .toast-container {
+        left: 20px;
+        right: 20px;
+    }
+    .toast {
+        width: 100%;
+    }
+}
+ 
+/* Extra small device adjustments */
+@media (max-width: 400px) {
+    .expense-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .modal-title {
+        font-size: 16px;
+    }
+    .groups-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .expenses-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+ 
+/* Landscape orientation for small devices */
+@media (max-height: 500px) and (orientation: landscape) {
+    .modal {
+        max-height: 90vh;
+    }
+    .welcome-icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
+    .welcome-title {
+        margin-bottom: 5px;
+    }
+    .welcome-screen {
+        gap: 10px;
+    }
+}
+ 
+/* Print styles for reports */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .report-container, .report-container * {
+        visibility: visible;
+    }
+    .report-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}
+ 
+/* Additional UI improvements */
+.expense-item, .balance-item, .group-item {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+ 
+/* Make buttons more touch-friendly on mobile */
+@media (max-width: 768px) {
+    .btn, .theme-toggle {
+        min-height: 30px;
+    }
+    .form-control {
+        min-height: 44px;
+    }
+    .theme-toggle {
+        width: 44px;
+        height: 44px;
     }
 }
