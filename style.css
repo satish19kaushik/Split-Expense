@@ -668,6 +668,15 @@ header {
 .confirm-actions{
     margin-top: 1rem;
 }
+/* setelment summery */
+.group-name {
+    color: #007bff; /* ya koi bhi theme color */
+    font-weight: bold;
+    font-style: italic;
+    padding-left: 5px;
+  }
+
+
 /* Responsive adjustments */    
 @media (max-width: 768px) {
     .dashboard {

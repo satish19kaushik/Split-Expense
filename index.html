@@ -215,7 +215,7 @@
             </div>
             <div class="modal-body">
                 <div class="report-container" id="report-container">
-                    <h4 class="report-title">Settlements Summary</h4>
+                    <h4 class="report-title"><i class="fas fa-file-invoice"> &nbsp;</i>Settlements Summary for <span class="group-name" id="ShowGroupName"></span></h4>
                     <div class="report-settlements" id="report-settlements">
                         <!-- Settlement items will be dynamically added here -->
                     </div>
@@ -249,7 +249,7 @@
 class ExpenseSplitApp {
     constructor() {
         this.groups = [];
-        this.currentGroupId = null;
+        this.currentGroupId = null; 
         this.init();
     }
 
@@ -939,6 +939,7 @@ class ExpenseSplitApp {
                 `;
                 settlementsContainer.appendChild(settlementItem);
             });
+            document.getElementById('ShowGroupName').innerText = group.name;
         }
         
         document.getElementById('report-modal').classList.add('active');
