@@ -622,6 +622,49 @@ class ExpenseSplitApp {
         this.updateBalances(group);
     }
 
+    // updateExpensesList(group) {
+    //     const expenseList = document.getElementById('expense-list');
+    //     const emptyState = document.getElementById('empty-expenses');
+        
+    //     // Clear current expenses
+    //     expenseList.innerHTML = '';
+        
+    //     if (group.expenses.length === 0) {
+    //         // Show empty state
+    //         expenseList.appendChild(emptyState);
+    //         return;
+    //     }
+        
+    //     // Sort expenses by date (newest first)
+    //     const sortedExpenses = [...group.expenses].sort((a, b) => {
+    //         return new Date(b.date) - new Date(a.date);
+    //     });
+        
+    //     sortedExpenses.forEach(expense => {
+    //         const expenseElement = document.createElement('div');
+    //         expenseElement.className = 'expense-item';
+    //         expenseElement.dataset.id = expense.id;
+            
+    //         expenseElement.innerHTML = `
+    //             <div class="expense-details">
+    //                 <div class="expense-title">${expense.description}</div>
+    //                 <div class="expense-meta">
+    //                     <span><i class="fas fa-user"></i> ${expense.paidBy}</span>
+    //                     <span><i class="fas fa-calendar"></i> ${this.formatDate(expense.date)}</span>
+    //                 </div>
+    //             </div>
+    //             <div class="expense-amount">${this.formatCurrency(expense.amount)}</div>
+    //         `;
+            
+    //         // Add click event for editing expense
+    //         expenseElement.addEventListener('click', () => {
+    //             // TODO: Implement expense editing
+    //             this.showToast('Expense editing will be implemented in a future update', 'info');
+    //         });
+            
+    //         expenseList.appendChild(expenseElement);
+    //     });
+    // }
     updateExpensesList(group) {
         const expenseList = document.getElementById('expense-list');
         const emptyState = document.getElementById('empty-expenses');
@@ -653,8 +696,19 @@ class ExpenseSplitApp {
                         <span><i class="fas fa-calendar"></i> ${this.formatDate(expense.date)}</span>
                     </div>
                 </div>
-                <div class="expense-amount">${this.formatCurrency(expense.amount)}</div>
+                <div class="expense-amount">
+                    ${this.formatCurrency(expense.amount)}
+                    <button class="delete-expense-btn" title="Delete expense">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             `;
+            
+            // Add delete expense functionality
+            expenseElement.querySelector('.delete-expense-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.deleteExpense(expense.id);
+            });
             
             // Add click event for editing expense
             expenseElement.addEventListener('click', () => {
@@ -666,6 +720,29 @@ class ExpenseSplitApp {
         });
     }
 
+    // New function to delete an expense
+    deleteExpense(expenseId) {
+        const group = this.findGroupById(this.currentGroupId);
+        if (!group) return;
+        
+        // Find expense index
+        const expenseIndex = group.expenses.findIndex(expense => expense.id === expenseId);
+        
+        if (expenseIndex !== -1) {
+            // Remove expense
+            group.expenses.splice(expenseIndex, 1);
+            group.lastUpdated = new Date().toISOString();
+            
+            // Update UI
+            this.updateGroupDetails();
+            this.updateGroupsList();
+            
+            // Save data
+            this.saveData();
+            
+            this.showToast('Expense deleted successfully');
+        }
+    }
     updateBalances(group) {
         const balanceList = document.getElementById('balance-list');
         balanceList.innerHTML = '';
@@ -693,6 +770,7 @@ class ExpenseSplitApp {
             balanceList.appendChild(balanceElement);
         });
     }
+    
 
     calculateBalances(group) {
         const balances = {};
@@ -905,45 +983,106 @@ class ExpenseSplitApp {
     }
 
     // Settlement functions
+    // generateReport() {
+    //     const group = this.findGroupById(this.currentGroupId);
+    //     if (!group || group.expenses.length === 0) {
+    //         this.showToast('No expenses to generate report', 'info');
+    //         return;
+    //     }
+        
+    //     // Calculate balances
+    //     const balances = this.calculateBalances(group);
+    //     console.log(group)
+    //     // Generate settlement plan
+    //     const settlements = this.calculateSettlements(balances);
+        
+    //     // Display report
+    //     const settlementsContainer = document.getElementById('report-settlements');
+    //     settlementsContainer.innerHTML = '';
+        
+    //     if (settlements.length === 0) {
+    //         const noSettlement = document.createElement('div');
+    //         noSettlement.className = 'settlement-item';
+    //         noSettlement.innerHTML = `
+    //             <div class="settlement-text">Everyone is settled up!</div>
+    //         `;
+    //         settlementsContainer.appendChild(noSettlement);
+    //     } else {
+    //         settlements.forEach(settlement => {
+    //             const settlementItem = document.createElement('div');
+    //             settlementItem.className = 'settlement-item';
+    //             settlementItem.innerHTML = `
+    //                 <div class="settlement-text">${settlement.from} pays ${settlement.to}</div>
+    //                 <div class="settlement-amount">${this.formatCurrency(settlement.amount)}</div>
+    //             `;
+    //             settlementsContainer.appendChild(settlementItem);
+    //         });
+    //         document.getElementById('ShowGroupName').innerText = group.name;
+    //     }
+        
+    //     document.getElementById('report-modal').classList.add('active');
+    // }
+
     generateReport() {
-        const group = this.findGroupById(this.currentGroupId);
-        if (!group || group.expenses.length === 0) {
-            this.showToast('No expenses to generate report', 'info');
-            return;
-        }
-        
-        // Calculate balances
-        const balances = this.calculateBalances(group);
-        
-        // Generate settlement plan
-        const settlements = this.calculateSettlements(balances);
-        
-        // Display report
-        const settlementsContainer = document.getElementById('report-settlements');
-        settlementsContainer.innerHTML = '';
-        
-        if (settlements.length === 0) {
-            const noSettlement = document.createElement('div');
-            noSettlement.className = 'settlement-item';
-            noSettlement.innerHTML = `
-                <div class="settlement-text">Everyone is settled up!</div>
-            `;
-            settlementsContainer.appendChild(noSettlement);
-        } else {
-            settlements.forEach(settlement => {
-                const settlementItem = document.createElement('div');
-                settlementItem.className = 'settlement-item';
-                settlementItem.innerHTML = `
-                    <div class="settlement-text">${settlement.from} pays ${settlement.to}</div>
-                    <div class="settlement-amount">${this.formatCurrency(settlement.amount)}</div>
-                `;
-                settlementsContainer.appendChild(settlementItem);
-            });
-            document.getElementById('ShowGroupName').innerText = group.name;
-        }
-        
-        document.getElementById('report-modal').classList.add('active');
+    const group = this.findGroupById(this.currentGroupId);
+    if (!group || group.expenses.length === 0) {
+        this.showToast('No expenses to generate report', 'info');
+        return;
     }
+
+    // Calculate balances
+    const balances = this.calculateBalances(group);
+
+    // Total expense
+    const totalExpense = group.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+
+    // Share per person
+    const membersCount = group.members.length;
+    const sharePerPerson = totalExpense / membersCount;
+
+    // Generate settlement plan
+    const settlements = this.calculateSettlements(balances);
+
+    // Display report
+    const settlementsContainer = document.getElementById('report-settlements');
+    settlementsContainer.innerHTML = '';
+
+    // Show group name
+    document.getElementById('ShowGroupName').innerText = group.name;
+
+    // Create and append total expense and share per person
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = 'report-summary';
+    summaryDiv.innerHTML = `
+        <div><strong>Total Expense:</strong> ${this.formatCurrency(totalExpense)}</div>
+        <div><strong>Share Per Person:</strong> ${this.formatCurrency(sharePerPerson)}</div>
+    `;
+    settlementsContainer.appendChild(summaryDiv);
+
+    // Settlements
+    if (settlements.length === 0) {
+        const noSettlement = document.createElement('div');
+        noSettlement.className = 'settlement-item';
+        noSettlement.innerHTML = `
+            <div class="settlement-text">Everyone is settled up!</div>
+        `;
+        settlementsContainer.appendChild(noSettlement);
+    } else {
+        settlements.forEach(settlement => {
+            const settlementItem = document.createElement('div');
+            settlementItem.className = 'settlement-item';
+            settlementItem.innerHTML = `
+                <div class="settlement-text">${settlement.from} pays ${settlement.to}</div>
+                <div class="settlement-amount">${this.formatCurrency(settlement.amount)}</div>
+            `;
+            settlementsContainer.appendChild(settlementItem);
+        });
+    }
+
+    // Show report modal
+    document.getElementById('report-modal').classList.add('active');
+}
+
 
     calculateSettlements(balances) {
         const settlements = [];
@@ -1047,37 +1186,249 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// document.addEventListener('DOMContentLoaded', () => {
+//   window.shareReport = function () {
+//     const reportElement = document.getElementById('report-container');
+    
+//     if (!reportElement) {
+//       alert("Report element not found!");
+//       return;
+//     }
+
+//     // Extract text content from the report
+//     const reportText = reportElement.innerText || reportElement.textContent;
+    
+//     // Check if the Web Share API is available
+//     if (navigator.share) {
+//       navigator.share({
+//         title: 'Settlements Report',
+//         text: reportText
+//       })
+//       .then(() => console.log('Report shared successfully'))
+//       .catch((error) => console.error('Error sharing report:', error));
+//     } else {
+//       // Fallback for browsers that don't support the Web Share API
+//       try {
+//         // Create a temporary textarea to copy text to clipboard
+//         const textarea = document.createElement('textarea');
+//         textarea.value = reportText;
+//         textarea.style.position = 'fixed';  // Prevent scrolling to bottom
+//         document.body.appendChild(textarea);
+//         textarea.focus();
+//         textarea.select();
+        
+//         // Execute copy command
+//         const successful = document.execCommand('copy');
+        
+//         if (successful) {
+//           alert('Report text copied to clipboard!');
+//         } else {
+//           alert('Unable to copy text to clipboard');
+//         }
+        
+//         document.body.removeChild(textarea);
+//       } catch (err) {
+//         console.error('Failed to copy text:', err);
+//         alert('Unable to share or copy the report text');
+//       }
+//     }
+//   };
+// });
+
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   window.shareReport = function () {
+//     const reportElement = document.getElementById('report-container');
+
+//     if (!reportElement) {
+//       alert("Report element not found!");
+//       return;
+//     }
+
+//     // Use textContent to preserve formatting more consistently
+//     const reportText = reportElement.textContent.trim();
+
+//     if (navigator.share) {
+//       navigator.share({
+//         title: 'TripSplit - Settlement Summary',
+//         text: reportText
+//       })
+//       .then(() => console.log('Report shared successfully'))
+//       .catch((error) => console.error('Error sharing report:', error));
+//     } else {
+//       try {
+//         const textarea = document.createElement('textarea');
+//         textarea.value = reportText;
+//         textarea.style.position = 'fixed';
+//         textarea.style.top = '0';
+//         textarea.style.left = '0';
+//         textarea.style.width = '1px';
+//         textarea.style.height = '1px';
+//         textarea.style.opacity = '0';
+
+//         document.body.appendChild(textarea);
+//         textarea.focus();
+//         textarea.select();
+
+//         const successful = document.execCommand('copy');
+
+//         document.body.removeChild(textarea);
+
+//         if (successful) {
+//           alert('Report text copied to clipboard!');
+//         } else {
+//           alert('Unable to copy text to clipboard');
+//         }
+//       } catch (err) {
+//         console.error('Failed to copy text:', err);
+//         alert('Unable to share or copy the report text');
+//       }
+//     }
+//   };
+// });
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   window.shareReport = function () {
+//     const reportElement = document.getElementById('report-container');
+
+//     if (!reportElement) {
+//       alert("Report element not found!");
+//       return;
+//     }
+
+//     const personBlocks = reportElement.querySelectorAll('.settlement-item');
+//     const payments = [];
+//     const peopleSet = new Set();
+//     let totalExpense = 0;
+// console.log('test',reportElement)
+//     personBlocks.forEach(block => {
+//       const payerText = block.querySelector('.payer')?.textContent.trim();
+//       const amountText = block.querySelector('.amount')?.textContent.trim().replace(/[₹,]/g, '');
+//       const amount = parseFloat(amountText);
+
+//       if (payerText && !isNaN(amount)) {
+//         payments.push({ payerText, amount });
+//         totalExpense += amount;
+
+//         const [from, , to] = payerText.split(" ");
+//         peopleSet.add(from);
+//         peopleSet.add(to);
+//       }
+//     });
+
+//     const totalPeople = peopleSet.size;
+//     const sharePerPerson = (totalExpense / totalPeople).toFixed(2);
+
+//     let formattedReport = `Settlements Summary for Hemant Barat\n\n`;
+//     formattedReport += `Total Expenses: ₹${totalExpense.toFixed(2)}\n`;
+//     formattedReport += `Share Per Person: ₹${sharePerPerson}\n\n`;
+//     formattedReport += `Settlement Plan:\n\n`;
+
+//     payments.forEach(({ payerText, amount }) => {
+//       formattedReport += `${payerText}\n₹${amount.toFixed(2)}\n\n`;
+//     });
+
+//     // Share or fallback to copy
+//     if (navigator.share) {
+//       navigator.share({
+//         title: 'TripSplit - Settlement Summary',
+//         text: formattedReport
+//       })
+//       .then(() => console.log('Report shared successfully'))
+//       .catch((error) => console.error('Error sharing report:', error));
+//     } else {
+//       try {
+//         const textarea = document.createElement('textarea');
+//         textarea.value = formattedReport;
+//         textarea.style.position = 'fixed';
+//         textarea.style.top = '0';
+//         textarea.style.left = '0';
+//         textarea.style.width = '1px';
+//         textarea.style.height = '1px';
+//         textarea.style.opacity = '0';
+
+//         document.body.appendChild(textarea);
+//         textarea.focus();
+//         textarea.select();
+
+//         const successful = document.execCommand('copy');
+//         document.body.removeChild(textarea);
+
+//         if (successful) {
+//           alert('Report text copied to clipboard!');
+//         } else {
+//           alert('Unable to copy text to clipboard');
+//         }
+//       } catch (err) {
+//         console.error('Failed to copy text:', err);
+//         alert('Unable to share or copy the report text');
+//       }
+//     }
+//   };
+// });
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
-    // setTimeout(() => {
-    window.shareReport = function () {
-      const element = document.getElementById('report-container');
-      if (!element) {
-        alert("Report element not found!");
-        return;
+  window.shareReport = function () {
+    const reportContainer = document.getElementById('report-container');
+    const groupName = document.getElementById('ShowGroupName')?.textContent.trim();
+    const totalExpenseText = document.querySelector('.report-summary > div:nth-child(1)')?.textContent.trim();
+    const sharePerPersonText = document.querySelector('.report-summary > div:nth-child(2)')?.textContent.trim();
+    const settlementItems = document.querySelectorAll('.settlement-item');
+
+    if (!reportContainer || !settlementItems.length || !totalExpenseText || !sharePerPersonText) {
+      alert("Report data not found!");
+      return;
+    }
+
+    const totalExpense = totalExpenseText.replace(/[^\d.]/g, '');
+    const sharePerPerson = sharePerPersonText.replace(/[^\d.]/g, '');
+
+    const payments = [];
+
+    settlementItems.forEach(item => {
+      const text = item.querySelector('.settlement-text')?.textContent.trim();
+      const amountText = item.querySelector('.settlement-amount')?.textContent.trim().replace(/[₹,]/g, '');
+      const amount = parseFloat(amountText);
+
+      if (text && !isNaN(amount)) {
+        payments.push({ text, amount });
       }
+    });
 
-      html2canvas(element).then(canvas => {
-        canvas.toBlob(async blob => {
-          const file = new File([blob], 'report.png', { type: 'image/png' });
+    // Generate the report text
+    let reportText = `📋 Settlements Summary for ${groupName}\n\n`;
+    reportText += `💰 Total Expenses: ₹${parseFloat(totalExpense).toFixed(2)}\n`;
+    reportText += `👥 Share Per Person: ₹${parseFloat(sharePerPerson).toFixed(2)}\n\n`;
+    reportText += `🔄 Settlement Plan:\n\n`;
 
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            try {
-              await navigator.share({
-                files: [file],
-                title: 'Settlements Report',
-                text: 'Here is the report screenshot.',
-              });
-            } catch (err) {
-              console.error('Sharing failed:', err);
-            }
-          } else {
-            alert('Sharing not supported on this device.');
-          }
+    payments.forEach(({ text, amount }) => {
+      reportText += `• ${text} - ₹${amount.toFixed(2)}\n`;
+    });
+
+    // Share or fallback to copy
+    if (navigator.share) {
+      navigator.share({
+        title: 'TripSplit - Settlement Summary',
+        text: reportText
+      })
+      .then(() => console.log('Report shared successfully'))
+      .catch((error) => console.error('Error sharing report:', error));
+    } else {
+      // Clipboard fallback
+      navigator.clipboard.writeText(reportText)
+        .then(() => alert('Report copied to clipboard!'))
+        .catch(err => {
+          console.error('Clipboard write failed:', err);
+          alert('Failed to copy the report');
         });
-      });
-    };
-// },1000)
-  });
+    }
+  };
+});
+
 
 
 </script>
