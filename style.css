@@ -51,7 +51,17 @@ header {
     padding: 20px 0;
     margin-bottom: 30px;
     border-bottom: 1px solid var(--border-color);
+    top: 0;
+     background-color: var(--bg-color);
+    position: sticky;
+    z-index: 5;
 }
+/* .stickyTop {
+    top: 0;
+    background: #f5f5f5;
+    position: sticky;
+    z-index: 5;
+} */
 
 .logo {
     display: flex;
@@ -219,10 +229,13 @@ header {
     display: flex;
     flex-direction: column;
 }
-.group-expense-count{
+
+.group-expense-count {
     font-size: 0.8rem;
 }
-.welcome-screen, .group-details {
+
+.welcome-screen,
+.group-details {
     background-color: var(--card-bg);
     border-radius: 10px;
     box-shadow: 0 2px 10px var(--shadow-color);
@@ -591,40 +604,118 @@ header {
 }
 
 .report-container {
-    padding: 20px;
-    background-color: var(--bg-color);
-    border-radius: 8px;
-    margin-top: 20px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    padding: 12px 6px 10px 6px;
+    margin-top: 10px;
+    min-width: 0;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.report-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 15px;
+.report-minimal-header {
     text-align: center;
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
 }
 
-.report-settlements {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.settlement-item {
+.report-minimal-row {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-    background-color: var(--card-bg);
-    border-radius: 5px;
-}
-
-.settlement-text {
+    align-items: center;
+    font-size: 0.97rem;
+    padding: 6px 0;
+    border-bottom: 1px solid #ececec;
     font-weight: 500;
 }
 
-.settlement-amount {
-    font-weight: 600;
-    color: var(--primary-color);
+.report-minimal-row:last-of-type {
+    border-bottom: none;
+}
+
+.report-minimal-settlements {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.report-minimal-settlement-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.97rem;
+    background:var(--bg-color);
+    /* background-color: var(--bg-color); var(--card-bg);*/
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 6px 8px;
+    margin-bottom: 3px;
+    font-weight: 400;
+}
+
+.report-minimal-settlement-row .arrow {
+    margin: 0 6px;
+    font-size: 1.1em;
+    color: #888;
+}
+
+.report-minimal-settlement-row .amount {
+    font-weight: 500;
+    color: #1976d2;
+}
+
+.report-minimal-settlement-row.settled {
+    color: #2e7d32;
+    background: #eafbe6;
+    border: none;
+    justify-content: center;
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .report-container {
+        padding: 7px 2px 7px 2px;
+        border-radius: 5px;
+        max-width: 98vw;
+    }
+    .report-minimal-header {
+        font-size: 1rem;
+        margin-bottom: 5px;
+    }
+    .report-minimal-row {
+        font-size: 0.93rem;
+        padding: 5px 0;
+    }
+    .report-minimal-settlement-row {
+        font-size: 0.93rem;
+        padding: 5px 4px;
+        border-radius: 4px;
+    }
+}
+
+@media (max-width: 400px) {
+    .report-container {
+        padding: 4px 0 4px 0;
+        border-radius: 3px;
+    }
+    .report-minimal-header {
+        font-size: 0.92rem;
+    }
+    .report-minimal-row {
+        font-size: 0.88rem;
+        padding: 3px 0;
+    }
+    .report-minimal-settlement-row {
+        font-size: 0.88rem;
+        padding: 3px 2px;
+        border-radius: 3px;
+    }
 }
 
 /* Toast notification */
@@ -660,24 +751,73 @@ header {
 .toast.info {
     background-color: var(--info-color);
 }
-.confirm-dialog{
+
+.confirm-dialog {
     background: white;
     padding: 1rem;
     border-radius: 16px;
 }
-.confirm-actions{
+
+.confirm-dialog p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-color, #222);
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
     margin-top: 1rem;
 }
+
+.confirm-actions .btn {
+    min-width: 90px;
+    font-size: 1rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.confirm-actions .btn-danger {
+    background: #ff3b30;
+    color: #fff;
+    border: none;
+}
+
+.confirm-actions .btn-danger:hover {
+    background: #e22a1a;
+}
+
+.confirm-actions .btn-text {
+    background: transparent;
+    color: var(--text-color, #222);
+    border: 1px solid #ccc;
+}
+
+.confirm-actions .btn-text:hover {
+    background: #f2f2f2;
+}
+
+/* Responsive for small screens */
+@media (max-width: 480px) {
+    .confirm-dialog {
+        padding: 1.2rem 0.5rem;
+        min-width: 90vw;
+    }
+}
+
 /* setelment summery */
 .group-name {
-    color: #007bff; /* ya koi bhi theme color */
+    color: #007bff;
+    /* ya koi bhi theme color */
     font-weight: bold;
     font-style: italic;
     padding-left: 5px;
-  }
+}
 
 
-/* Responsive adjustments */    
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .dashboard {
         grid-template-columns: 1fr;
@@ -692,8 +832,9 @@ header {
         grid-template-columns: 1fr;
     }
 }
+
 /* Enhanced Responsive CSS for ExpenseSplit */
- 
+
 /* Base responsive adjustments */
 @media (max-width: 992px) {
     .dashboard {
@@ -701,152 +842,189 @@ header {
         gap: 15px;
         height: auto;
     }
+
     .groups-panel {
         max-height: 250px;
     }
+
     .group-details-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
     }
+
     .group-actions {
         width: 100%;
         flex-wrap: wrap;
     }
+
     .group-info {
         flex-direction: column;
         gap: 15px;
     }
+
     .info-block {
         padding-bottom: 10px;
         border-bottom: 1px solid var(--border-color);
     }
+
     .info-block:last-child {
         border-bottom: none;
     }
+
     .balance-list {
         grid-template-columns: 1fr;
     }
+
     .modal {
         width: 95%;
         max-height: 80vh;
     }
 }
- 
+
 /* Mobile-specific adjustments */
 @media (max-width: 576px) {
     .container {
         padding: 10px;
     }
+
     header {
         padding: 15px 0;
         margin-bottom: 15px;
     }
+
     .logo {
         font-size: 20px;
     }
+
     .logo i {
         font-size: 22px;
     }
+
     .group-details {
         padding: 15px;
     }
+
     .group-details-title {
         font-size: 20px;
     }
+
     .btn {
         padding: 6px 12px;
         font-size: 13px;
     }
+
     .expense-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
     }
+
     .expense-amount {
         align-self: flex-end;
     }
+
     .welcome-title {
         font-size: 22px;
     }
+
     .welcome-icon {
         font-size: 60px;
     }
-    .modal-header, .modal-body, .modal-footer {
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
         padding: 15px;
     }
+
     .form-member {
         padding: 4px 8px;
         font-size: 11px;
     }
+
     .member-input-container {
         flex-direction: column;
     }
+
     .member-input-container .btn {
         align-self: flex-start;
     }
+
     .custom-split {
         grid-template-columns: 1fr;
     }
+
     /* Improve modal spacing on small screens */
     .form-group {
         margin-bottom: 15px;
     }
+
     /* Adjust toast position */
     .toast-container {
         left: 20px;
         right: 20px;
     }
+
     .toast {
         width: 100%;
     }
 }
- 
+
 /* Extra small device adjustments */
 @media (max-width: 400px) {
     .expense-meta {
         flex-direction: column;
         gap: 5px;
     }
+
     .modal-title {
         font-size: 16px;
     }
+
     .groups-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
     }
+
     .expenses-header {
         flex-direction: column;
         gap: 10px;
     }
 }
- 
+
 /* Landscape orientation for small devices */
 @media (max-height: 500px) and (orientation: landscape) {
     .modal {
         max-height: 90vh;
     }
+
     .welcome-icon {
         font-size: 40px;
         margin-bottom: 10px;
     }
+
     .welcome-title {
         margin-bottom: 5px;
     }
+
     .welcome-screen {
         gap: 10px;
     }
 }
- 
+
 /* Print styles for reports */
 @media print {
     body * {
         visibility: hidden;
     }
-    .report-container, .report-container * {
+
+    .report-container,
+    .report-container * {
         visibility: visible;
     }
+
     .report-container {
         position: absolute;
         left: 0;
@@ -854,29 +1032,36 @@ header {
         width: 100%;
     }
 }
- 
+
 /* Additional UI improvements */
-.expense-item, .balance-item, .group-item {
+.expense-item,
+.balance-item,
+.group-item {
     transition: transform 0.2s, box-shadow 0.2s;
 }
- 
+
 /* Make buttons more touch-friendly on mobile */
 @media (max-width: 768px) {
-    .btn, .theme-toggle {
+
+    .btn,
+    .theme-toggle {
         min-height: 30px;
     }
+
     .form-control {
         min-height: 44px;
     }
+
     .theme-toggle {
         width: 44px;
         height: 44px;
     }
 }
+
 .report-summary {
     margin-bottom: 1rem;
     padding: 0.5rem;
-    background-color: #f3f3f3;
+     background-color: var(--bg-color);
     border-radius: 6px;
     font-weight: bold;
 }
@@ -911,3 +1096,216 @@ header {
 .dark-theme .delete-expense-btn {
     color: #ff453a;
 }
+
+.disabled-btn {
+    pointer-events: none;
+    /* Click disable */
+    opacity: 0.6;
+    /* Greyed out */
+    cursor: not-allowed;
+    /* Disabled cursor */
+}
+
+.report-header {
+    text-align: center;
+    margin-bottom: 18px;
+}
+.report-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+.report-group-name {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+.report-summary-cards {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+.report-summary-card {
+    background: #f0f8ff;
+    border-radius: 8px;
+    padding: 14px 22px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.report-summary-card i {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+}
+.report-settlements {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.settlement-item {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.08rem;
+    gap: 10px;
+}
+.settlement-item .settlement-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.settlement-item .settlement-text .fa-user-circle {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+.settlement-item .settlement-text .fa-arrow-right {
+    color: #888;
+    font-size: 1.1rem;
+}
+.settlement-item .settlement-amount {
+    font-weight: bold;
+    color: var(--primary-dark);
+    font-size: 1.1rem;
+}
+.settlement-item.settled {
+    background: #e6fbe6;
+    color: #2e7d32;
+    justify-content: center;
+    font-weight: bold;
+}
+.settlement-item.settled .fa-check-circle {
+    color: #43a047;
+    margin-right: 8px;
+    font-size: 1.2rem;
+}
+.report-container {
+    background: #fafdff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 32px 18px 24px 18px;
+    margin-top: 20px;
+    min-width: 280px;
+}
+@media (max-width: 600px) {
+    .report-header {
+        margin-bottom: 10px;
+    }
+    .report-title {
+        font-size: 1.02rem;
+        font-weight: 700;
+        margin-bottom: 2px;
+        text-align: center;
+        letter-spacing: 0.01em;
+        padding: 0;
+        line-height: 1.2;
+        justify-content: center;
+    }
+    .report-title i {
+        display: none;
+    }
+    .report-group-name {
+        font-size: 0.98rem;
+        margin-bottom: 4px;
+    }
+    .report-container {
+        padding: 7px 2px 7px 2px;
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 7px;
+        background: #f7fafc;
+        box-shadow: none;
+    }
+    .report-summary-cards {
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    .report-summary-card {
+        font-size: 0.93rem;
+        padding: 7px 6px;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        border-radius: 6px;
+        background: #f3f6fa;
+        box-shadow: none;
+        border: 1px solid #e0e0e0;
+    }
+    .report-summary-cards:after {
+        content: '';
+        display: block;
+        height: 1px;
+        background: #e0e0e0;
+        margin: 7px 0 2px 0;
+        width: 100%;
+    }
+    .report-settlements {
+        gap: 6px;
+    }
+    .settlement-item {
+        font-size: 0.93rem;
+        padding: 7px 4px;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        background: #f9fbfd;
+        border-radius: 6px;
+        box-shadow: none;
+        border: 1px solid #e0e0e0;
+    }
+    .settlement-item .settlement-text {
+        flex-wrap: wrap;
+        word-break: break-word;
+        font-size: 0.93rem;
+    }
+    .settlement-item .settlement-amount {
+        font-size: 0.98rem;
+        margin-top: 2px;
+    }
+    .settlement-item .fa-user-circle,
+    .settlement-item .fa-arrow-right {
+        font-size: 1rem;
+    }
+    .settlement-item.settled {
+        background: #eafbe6;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+    }
+    .settlement-item.settled .fa-check-circle {
+        font-size: 1rem;
+    }
+}
+@media (max-width: 400px) {
+    .report-title {
+        font-size: 0.92rem;
+    }
+    .report-summary-card {
+        font-size: 0.85rem;
+        padding: 5px 2px;
+        border-radius: 4px;
+    }
+    .settlement-item {
+        font-size: 0.85rem;
+        padding: 5px 1px;
+        border-radius: 4px;
+    }
+}
+
