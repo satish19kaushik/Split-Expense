@@ -254,6 +254,21 @@
     <div class="toast-container" id="toast-container">
         <!-- Toast notifications will be dynamically added here -->
     </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal" style="max-width:340px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Account & Backup</h3>
+                <button class="modal-close" id="close-settings-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:12px;">
+                <button class="btn" id="export-data-btn">Export Data</button>
+                <button class="btn" id="import-data-btn">Import Data</button>
+                <input type="file" id="import-data-file" accept="application/json" style="display:none;" />
+            </div>
+        </div>
+    </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
@@ -349,6 +364,17 @@ class ExpenseSplitApp {
 
         // Expenses share button
         document.getElementById('share-expenses-btn').addEventListener('click', () => this.shareExpensesOnWhatsApp());
+
+        // Open settings modal on logo/title click
+        document.querySelector('.logo').addEventListener('click', () => {
+            document.getElementById('settings-modal').classList.add('active');
+        });
+        document.getElementById('close-settings-modal').addEventListener('click', () => {
+            document.getElementById('settings-modal').classList.remove('active');
+        });
+        document.getElementById('export-data-btn').addEventListener('click', () => this.exportData());
+        document.getElementById('import-data-btn').addEventListener('click', () => document.getElementById('import-data-file').click());
+        document.getElementById('import-data-file').addEventListener('change', (e) => this.importData(e));
     }
 
     // Theme functions
@@ -1187,6 +1213,66 @@ class ExpenseSplitApp {
         text += `\nShared via ExpenseSplit`;
         const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
         window.open(waUrl, '_blank');
+    }
+
+    exportData() {
+        const groupIdsStr = localStorage.getItem('expenseSplitGroupIds');
+        let groupIds = [];
+        if (groupIdsStr) groupIds = JSON.parse(groupIdsStr);
+        const groups = groupIds.map(id => JSON.parse(localStorage.getItem('expenseSplitGroup_' + id) || '{}'));
+        const data = {
+            groups,
+            groupIds,
+            currentGroupId: localStorage.getItem('expenseSplitCurrentGroupId') || null
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ExpenseSplitBackup.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.showToast('Data exported successfully');
+    }
+
+    importData(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                if (!data.groups || !Array.isArray(data.groups) || !data.groupIds) {
+                    this.showToast('Invalid backup file', 'error');
+                    return;
+                }
+                if (!confirm('Importing will overwrite all your current data. Continue?')) return;
+                // Clear all relevant localStorage
+                const allKeys = Object.keys(localStorage);
+                for (const key of allKeys) {
+                    if (key.startsWith('expenseSplitGroup_') || key === 'expenseSplitGroupIds' || key === 'expenseSplitCurrentGroupId') {
+                        localStorage.removeItem(key);
+                    }
+                }
+                // Restore
+                localStorage.setItem('expenseSplitGroupIds', JSON.stringify(data.groupIds));
+                if (data.currentGroupId) localStorage.setItem('expenseSplitCurrentGroupId', data.currentGroupId);
+                data.groups.forEach(group => {
+                    if (group.id) {
+                        localStorage.setItem('expenseSplitGroup_' + group.id, JSON.stringify(group));
+                    }
+                });
+                this.showToast('Data imported! Reloading...');
+                setTimeout(() => window.location.reload(), 800);
+            } catch (err) {
+                this.showToast('Import failed: Invalid file', 'error');
+            }
+        };
+        reader.readAsText(file);
+        // Reset file input
+        e.target.value = '';
     }
 }
 
