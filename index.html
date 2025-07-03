@@ -51,7 +51,7 @@
 
                 <div class="group-details" id="group-details">
                     <div class="group-details-header">
-                        <h2 class="group-details-title" id="group-name">Group Name</h2>
+                        <h2 class="group-details-title" id="group-name" style="cursor:pointer;text-decoration:underline;color:#1976d2;">Group Name</h2>
                         <div class="group-actions">
                             <button class="btn btn-warning" id="edit-group-btn">
                                 <i class="fas fa-edit"></i>
@@ -210,17 +210,19 @@
     <div class="modal-overlay" id="report-modal">
         <div class="modal">
             <div class="modal-header">
-                <h3 class="modal-title">Expense Report <i class="fas fa-share" style="cursor: pointer;" onclick="shareReport()"></i> </h3>
-                <!-- <i class="fas fa-share-alt"></i>  -->
+                <h3 class="modal-title">Expense Report 
+                    <i class="fas fa-share" style="cursor: pointer;" onclick="shareReport()"></i> 
+                </h3>
                 <button class="modal-close" id="close-report-modal">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
+                <div class="report-group-title" id="report-group-name" style="font-size:1.1em;font-weight:600;text-align:center;margin-bottom:8px;"></div>
                 <div class="report-minimal-header">Settlement Report</div>
                 <div class="report-minimal-row">Total Expense <span id="report-minimal-total"></span></div>
                 <div class="report-minimal-row">Per Person <span id="report-minimal-perperson"></span></div>
-                <div class="report-minimal-settlements" id="report-minimal-settlements"></div>
+                <div class="report-minimal-settlements" id="report-minimal-settlements" style="max-height:220px;overflow-y:auto;padding-right:2px;"></div>
             </div>
             <div class="modal-footer">
                 <button class="btn" id="close-report-btn">Close</button>
@@ -266,6 +268,19 @@
                 <button class="btn" id="export-data-btn">Export Data</button>
                 <button class="btn" id="import-data-btn">Import Data</button>
                 <input type="file" id="import-data-file" accept="application/json" style="display:none;" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Group Info Modal -->
+    <div class="modal-overlay" id="group-info-modal">
+        <div class="modal" style="max-width:340px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Group Details</h3>
+                <button class="modal-close" id="close-group-info-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="group-info-modal-body">
+                <!-- Content JS se aayega -->
             </div>
         </div>
     </div>
@@ -586,6 +601,7 @@ class ExpenseSplitApp {
                 expenses: [],
                 created: new Date().toISOString(),
                 lastUpdated: new Date().toISOString(),
+                status: 'Active',
             };
             memberElements.forEach(element => {
                 newGroup.members.push(element.querySelector('span').textContent);
@@ -632,7 +648,9 @@ class ExpenseSplitApp {
             
             groupElement.innerHTML = `
                 <div class="group-item-header">
-                    <div class="group-name">${group.name}</div>
+                    <div class="group-name">${group.name}
+                      <span class="group-status-badge ${group.status === 'Completed' ? 'completed' : 'active'}">${group.status}</span>
+                    </div>
                     <div class="group-members">
                         <i class="fas fa-users"></i>
                         <span>${group.members.length}</span>
@@ -691,7 +709,12 @@ class ExpenseSplitApp {
         if (!group) return;
         
         // Update header
-        document.getElementById('group-name').textContent = group.name;
+        const statusBadge = document.createElement('span');
+        statusBadge.className = 'group-status-badge ' + (group.status === 'Completed' ? 'completed' : 'active');
+        statusBadge.textContent = group.status;
+        const groupNameElem = document.getElementById('group-name');
+        groupNameElem.textContent = group.name;
+        groupNameElem.onclick = () => this.openGroupInfoModal(group);
         
         // Update info
         document.getElementById('members-count').textContent = group.members.length;
@@ -1084,6 +1107,7 @@ class ExpenseSplitApp {
         }
         // Show report modal
         document.getElementById('report-modal').classList.add('active');
+        document.getElementById('report-group-name').textContent = group.name;
     }
 
     calculateSettlements(balances) {
@@ -1274,6 +1298,55 @@ class ExpenseSplitApp {
         // Reset file input
         e.target.value = '';
     }
+
+    openGroupInfoModal(group) {
+        const modal = document.getElementById('group-info-modal');
+        const body = document.getElementById('group-info-modal-body');
+        body.innerHTML = '';
+        // Group name
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'group-info-name';
+        nameDiv.textContent = group.name;
+        body.appendChild(nameDiv);
+        // Members count
+        const countDiv = document.createElement('div');
+        countDiv.className = 'group-info-count';
+        countDiv.textContent = `Members: ${group.members.length}`;
+        body.appendChild(countDiv);
+        // Members list
+        const listUl = document.createElement('ul');
+        listUl.className = 'group-info-list';
+        group.members.forEach(m => {
+            const li = document.createElement('li');
+            li.textContent = m;
+            listUl.appendChild(li);
+        });
+        body.appendChild(listUl);
+        // Status dropdown row
+        const statusRow = document.createElement('div');
+        statusRow.className = 'group-info-status-row';
+        const statusLabel = document.createElement('label');
+        statusLabel.textContent = 'Status:';
+        statusLabel.style.marginRight = '4px';
+        const statusSelect = document.createElement('select');
+        statusSelect.innerHTML = '<option value="Active">Active</option><option value="Completed">Completed</option>';
+        statusSelect.value = group.status || 'Active';
+        statusSelect.onchange = () => {
+            group.status = statusSelect.value;
+            group.lastUpdated = new Date().toISOString();
+            this.updateGroupsList();
+            this.saveData();
+            this.showToast('Group status updated');
+        };
+        statusRow.appendChild(statusLabel);
+        statusRow.appendChild(statusSelect);
+        body.appendChild(statusRow);
+        // Show modal
+        modal.classList.add('active');
+        document.getElementById('close-group-info-modal').onclick = () => {
+            modal.classList.remove('active');
+        };
+    }
 }
 
 // Initialize the app
@@ -1283,46 +1356,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   window.shareReport = function () {
-    const reportContainer = document.getElementById('report-container');
-    const groupName = document.getElementById('ShowGroupName')?.textContent.trim();
-    const totalExpenseText = document.querySelector('.report-summary > div:nth-child(1)')?.textContent.trim();
-    const sharePerPersonText = document.querySelector('.report-summary > div:nth-child(2)')?.textContent.trim();
-    const settlementItems = document.querySelectorAll('.settlement-item');
+    const groupName = document.getElementById('report-group-name')?.textContent.trim();
+    const totalExpenseText = document.getElementById('report-minimal-total')?.textContent.trim();
+    const sharePerPersonText = document.getElementById('report-minimal-perperson')?.textContent.trim();
+    const settlementItems = document.querySelectorAll('#report-minimal-settlements .report-minimal-settlement-row');
 
-    if (!reportContainer || !settlementItems.length || !totalExpenseText || !sharePerPersonText) {
+    if (!groupName || !totalExpenseText || !sharePerPersonText) {
       alert("Report data not found!");
       return;
     }
 
-    const totalExpense = totalExpenseText.replace(/[^\d.]/g, '');
-    const sharePerPerson = sharePerPersonText.replace(/[^\d.]/g, '');
+    let reportText = `📋 Settlements Summary for ${groupName}\n\n`;
+    reportText += `💰 Total Expenses: ${totalExpenseText}\n`;
+    reportText += `👥 Share Per Person: ${sharePerPersonText}\n\n`;
+    reportText += `🔄 Settlement Plan:\n\n`;
 
-    const payments = [];
-
+    let hasSettlement = false;
     settlementItems.forEach(item => {
-      const text = item.querySelector('.settlement-text')?.textContent.trim();
-      const amountText = item.querySelector('.settlement-amount')?.textContent.trim().replace(/[₹,]/g, '');
-      const amount = parseFloat(amountText);
-
-      if (text && !isNaN(amount)) {
-        payments.push({ text, amount });
+      // Ignore "Everyone is settled up!" row
+      if (item.classList.contains('settled')) return;
+      const text = item.querySelector('span')?.textContent.trim();
+      const amount = item.querySelector('.amount')?.textContent.trim();
+      if (text && amount) {
+        reportText += `• ${text} - ${amount}\n`;
+        hasSettlement = true;
       }
     });
 
-    // Generate the report text
-    let reportText = `📋 Settlements Summary for ${groupName}\n\n`;
-    reportText += `💰 Total Expenses: ₹${parseFloat(totalExpense).toFixed(2)}\n`;
-    reportText += `👥 Share Per Person: ₹${parseFloat(sharePerPerson).toFixed(2)}\n\n`;
-    reportText += `🔄 Settlement Plan:\n\n`;
+    if (!hasSettlement) {
+      reportText += "✔ Everyone is settled up!\n";
+    }
 
-    payments.forEach(({ text, amount }) => {
-      reportText += `• ${text} - ₹${amount.toFixed(2)}\n`;
-    });
+    reportText += `\nShared via ExpenseSplit`;
 
     // Share or fallback to copy
     if (navigator.share) {
       navigator.share({
-        title: 'TripSplit - Settlement Summary',
+        title: 'ExpenseSplit - Settlement Summary',
         text: reportText
       })
       .then(() => console.log('Report shared successfully'))

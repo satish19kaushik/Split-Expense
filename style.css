@@ -1311,3 +1311,283 @@ header {
     }
 }
 
+/* Expense Report Modal Enhancements */
+#report-modal .modal {
+  background: #f9fafc;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(60,60,90,0.18);
+  padding: 0;
+  overflow: hidden;
+}
+#report-modal .modal-header {
+  background: linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%);
+  color: #fff;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  padding: 18px 28px 12px 28px;
+  box-shadow: 0 2px 8px rgba(60,60,90,0.06);
+}
+#report-modal .modal-title {
+  font-size: 1.35em;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#report-modal .modal-title i {
+  font-size: 1.1em;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+#report-modal .modal-title i:hover {
+  color: #ffe066;
+}
+#report-modal .modal-body {
+  padding: 24px 28px 18px 28px;
+  background: #f9fafc;
+}
+#report-group-name {
+  font-size: 1.18em;
+  font-weight: 600;
+  color: #3a4a6b;
+  margin-bottom: 12px;
+  letter-spacing: 0.2px;
+}
+.report-minimal-header {
+  font-size: 1.08em;
+  font-weight: 600;
+  color: #4f8cff;
+  margin-bottom: 14px;
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+.report-minimal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1em;
+  padding: 7px 0;
+  border-bottom: 1px solid #e3e8f0;
+  color: #2d3a4b;
+}
+.report-minimal-row span {
+  font-weight: 500;
+  color: #1e88e5;
+}
+#report-minimal-settlements {
+  margin-top: 18px;
+}
+.report-minimal-settlement-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #eaf4ff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 1em;
+  color: #2d3a4b;
+  box-shadow: 0 1px 4px rgba(79,140,255,0.07);
+}
+.report-minimal-settlement-row .amount {
+  font-weight: 600;
+  color: #388e3c;
+  font-size: 1.08em;
+}
+.report-minimal-settlement-row.settled {
+  background: #e6f9e6;
+  color: #2e7d32;
+  font-weight: 600;
+  justify-content: center;
+}
+#report-modal .modal-footer {
+  background: #f1f5fa;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  padding: 14px 28px 14px 28px;
+  text-align: right;
+}
+@media (max-width: 600px) {
+  #report-modal .modal-body, #report-modal .modal-header, #report-modal .modal-footer {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  #report-modal .modal {
+    border-radius: 10px;
+  }
+}
+
+/* Improved Group Status Badge */
+.group-status-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px 1px 8px;
+  border-radius: 10px;
+  font-size: 0.78em;
+  font-weight: 600;
+  vertical-align: middle;
+  background: #ffe082;
+  color: #b26a00;
+  letter-spacing: 0.1px;
+  line-height: 1.2;
+  box-shadow: 0 1px 2px rgba(60,60,90,0.04);
+}
+.group-status-badge.completed {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+.group-status-badge.active {
+  background: #ffe082;
+  color: #b26a00;
+}
+
+/* Improved Group Info Modal Styles */
+#group-info-modal .modal {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(60,60,90,0.18);
+  padding: 0;
+  overflow: hidden;
+}
+#group-info-modal .modal-header {
+  background: #1976d2;
+  color: #fff;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  padding: 14px 20px 8px 20px;
+}
+#group-info-modal .modal-title {
+  font-size: 1.12em;
+  font-weight: 700;
+}
+#group-info-modal .modal-body {
+  padding: 18px 20px 16px 20px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#group-info-modal .group-info-name {
+  font-weight: 700;
+  font-size: 1.08em;
+  margin-bottom: 2px;
+  color: #1976d2;
+  text-align: center;
+}
+#group-info-modal .group-info-count {
+  font-size: 0.98em;
+  color: #555;
+  text-align: center;
+  margin-bottom: 2px;
+}
+#group-info-modal .group-info-list {
+  margin: 0 0 4px 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  justify-content: center;
+}
+#group-info-modal .group-info-list li {
+  font-size: 0.97em;
+  color: #333;
+  background: #f5faff;
+  border-radius: 6px;
+  padding: 3px 10px;
+  margin: 0;
+}
+#group-info-modal .group-info-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+#group-info-modal label {
+  font-size: 0.97em;
+  color: #444;
+  font-weight: 500;
+}
+#group-info-modal select {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #b0bec5;
+  font-size: 0.97em;
+  background: #f5faff;
+  color: #1976d2;
+  font-weight: 600;
+  outline: none;
+  margin-top: 0;
+}
+#group-info-modal select:focus {
+  border-color: #1976d2;
+}
+
+/* Dark mode for Expense Report modal */
+.dark-theme #report-modal .modal {
+  background: #232a36;
+  color: #e3eaf7;
+}
+.dark-theme #report-modal .modal-header {
+  background: linear-gradient(90deg, #223a5f 0%, #2b5876 100%);
+  color: #fff;
+}
+.dark-theme #report-modal .modal-body {
+  background: #232a36;
+  color: #e3eaf7;
+}
+.dark-theme #report-modal .modal-footer {
+  background: #1a202b;
+}
+.dark-theme #report-group-name {
+  color: #90caf9;
+}
+.dark-theme .report-minimal-header {
+  color: #90caf9;
+}
+.dark-theme .report-minimal-row {
+  color: #e3eaf7;
+  border-bottom: 1px solid #2b3a4b;
+}
+.dark-theme .report-minimal-row span {
+  color: #64b5f6;
+}
+.dark-theme .report-minimal-settlement-row {
+  background: #263445;
+  color: #e3eaf7;
+  box-shadow: 0 1px 4px rgba(79,140,255,0.04);
+}
+.dark-theme .report-minimal-settlement-row .amount {
+  color: #81c784;
+}
+.dark-theme .report-minimal-settlement-row.settled {
+  background: #1b3c1b;
+  color: #a5d6a7;
+}
+
+/* Make settlements list scrollable if too many items */
+#report-minimal-settlements {
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+@media (max-width: 600px) {
+  #report-minimal-settlements {
+    max-height: 140px;
+  }
+}
+/* Custom scrollbar for settlements */
+#report-minimal-settlements::-webkit-scrollbar {
+  width: 6px;
+}
+#report-minimal-settlements::-webkit-scrollbar-thumb {
+  background: #e3eaf7;
+  border-radius: 4px;
+}
+.dark-theme #report-minimal-settlements::-webkit-scrollbar-thumb {
+  background: #374151;
+}
+
